@@ -256,6 +256,21 @@ namespace Microsoft.AspNet.Routing.Tests
             Assert.Single(templatePart.InlineConstraints, c => c.Constraint == @"test(\?)");
         }
 
+        [Fact]
+        public void ParseRouteParameter_ConstraintWithSeperator_PatternIsParsedCorrectly()
+        {
+            // Arrange & Act
+            var templatePart = ParseParameter(@"param:int/");
+
+            // Assert
+            Assert.Equal("param", templatePart.Name);
+            Assert.Null(templatePart.DefaultValue);
+            Assert.False(templatePart.IsOptional);
+
+            Assert.Single(templatePart.InlineConstraints);
+            Assert.Single(templatePart.InlineConstraints, c => c.Constraint == @"int/");
+        }
+
         [Theory]
         [InlineData("", "")]
         [InlineData("?", "")]

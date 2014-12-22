@@ -49,7 +49,7 @@ namespace Microsoft.AspNet.Routing.Tests
             // Arrange, Act & Assert
             var ex = Assert.Throws<InvalidOperationException>(
                 () => _constraintResolver.ResolveConstraint("int(5)"));
-            Assert.Equal("Could not find a constructor for constraint type 'IntRouteConstraint'"+
+            Assert.Equal("Could not find a constructor for constraint type 'IntRouteConstraint'" +
                          " with the following number of parameters: 1.",
                          ex.Message);
         }
@@ -69,6 +69,16 @@ namespace Microsoft.AspNet.Routing.Tests
         {
             // Arrange & Act
             var constraint = _constraintResolver.ResolveConstraint("regex(ab,1)");
+
+            // Assert
+            Assert.IsType<RegexInlineRouteConstraint>(constraint);
+        }
+
+        [Fact]
+        public void ResolveConstraint_RegexInlineConstraint_WithCurlyBraces_Balanced()
+        {
+            // Arrange & Act
+            var constraint = _constraintResolver.ResolveConstraint(@"regex(\\b(?<month>\\d{1,2})/(?<day>\\d{1,2})/(?<year>\\d{2,4})\\b)");
 
             // Assert
             Assert.IsType<RegexInlineRouteConstraint>(constraint);
@@ -267,7 +277,7 @@ namespace Microsoft.AspNet.Routing.Tests
 
             // Act & Assert
             var ex = Assert.Throws<InvalidOperationException>(() => resolver.ResolveConstraint("custom"));
-            Assert.Equal("The constraint type 'System.String' which is mapped to constraint key 'custom'"+
+            Assert.Equal("The constraint type 'System.String' which is mapped to constraint key 'custom'" +
                          " must implement the 'IRouteConstraint' interface.",
                          ex.Message);
         }
@@ -296,6 +306,13 @@ namespace Microsoft.AspNet.Routing.Tests
             Assert.Equal("Could not find a constructor for constraint type 'IntRouteConstraint'" +
                          " with the following number of parameters: 2.",
                          ex.Message);
+        }
+
+        [Fact]
+        public void ResolveConstraint_ConstraintContainsSeperator_ReturnsNull()
+        {
+            // Arrange, Act & Assert
+            Assert.Null(_constraintResolver.ResolveConstraint("int/"));
         }
 
         private IInlineConstraintResolver GetInlineConstraintResolver(RouteOptions routeOptions)

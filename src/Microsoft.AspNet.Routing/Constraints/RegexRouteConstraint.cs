@@ -35,7 +35,7 @@ namespace Microsoft.AspNet.Routing.Constraints
                 && routeValue != null)
             {
                 var parameterValueString = Convert.ToString(routeValue, CultureInfo.InvariantCulture);
-
+                parameterValueString = System.Net.WebUtility.UrlDecode(parameterValueString);
                 return Constraint.IsMatch(parameterValueString);
             }
 
